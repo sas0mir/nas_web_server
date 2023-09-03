@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    const path = join('/', 'tmp', file.name)
+    const path = join('/', 'media/sas/D', file.name)
     await writeFile(path, buffer)
     console .log(`file uploaded to ${path}`)
 

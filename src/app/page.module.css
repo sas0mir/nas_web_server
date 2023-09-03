@@ -23,6 +23,76 @@
   outline: none;
 }
 
+/* EXPLORER */
+.explorer_container {
+  position: relative;
+  display: block;
+  height: 100vh;
+  padding: 5px 20px;
+  background-color: lightslategrey;
+}
+.explorer_grid {
+  position: relative;
+  display: flex;
+  padding: 10px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: lightgray;
+}
+
+/* LABEL */
+.icon_container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 60px;
+  height: 80px;
+  margin: 10px;
+  align-items: center;
+}
+.icon_container:hover {
+  color:lightslategray;
+}
+.icon_box {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  padding: 7px;
+  background-color: bisque;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: black;
+}
+.icon_box_selected {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  padding: 7px;
+  background-color: lightblue;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid blue;
+  border-radius: 5px;
+  color: blue;
+}
+.icon_box:hover, .icon_box_selected:hover {
+  border-color: lightslategray;
+  color: lightslategray;
+  cursor: pointer;
+}
+.icon_text {
+  margin-top: 5px;
+  font-family: monospace;
+  font-size: 8pt;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+}
+
 /* Mobile */
 @media (max-width: 700px) {
 }

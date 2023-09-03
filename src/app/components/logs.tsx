@@ -16,7 +16,7 @@ export default function Logs(props: any) {
         <input type="button" className={styles.logs_show_btn} onClick={e => setShow(!show)} value={show ? 'hide logs' : 'show logs'} />
         <div className={styles.logs_list}>
             {logs && logs.map((log, idx) => {
-                return <span key={log.id}>{`${log.id} ${log.operation} ${log.path} ${log.date}`}</span>
+                return <span key={log.id}>{`${log.id} ${log.operation} ${log.path} ${log.date.toDateString()}`}</span>
             })}
         </div>
     </main>
