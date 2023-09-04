@@ -11,7 +11,8 @@ export default function Label(props: any) {
     const [selected, setSelected] = useState(false);
 
     const icon = () => {
-        const type = name.split('.')[1] ? name.split('.')[1].toLowerCase() : '';
+        const nameArray = name.split('.');
+        const type = nameArray.length > 1 ? nameArray[nameArray.length - 1] : '';
         switch(type) {
             case '':
                 return <TfiFolder />
@@ -66,6 +67,7 @@ export default function Label(props: any) {
             {icon()}
         </div>
         <p className={styles.icon_text}>{name}</p>
+        {name.length > 18 && <div className={styles.icon_tooltip}>{name}</div>}
     </div>
   )
 }

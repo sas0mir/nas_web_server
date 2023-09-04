@@ -41,6 +41,35 @@
   border-radius: 10px;
   background-color: lightgray;
 }
+.explorer_header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+.explorer_header_fileinput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+.explorer_header_fileinput + label {
+  font-weight: bolder;
+  font-size: 9pt;
+  color: black;
+  border: 2px solid black;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  padding: 1px 4px;
+  margin-right: 10px;
+  margin-bottom: 2px;
+}
+.explorer_header_fileinput:focus + label, .explorer_header_fileinput + label:hover {
+  border-color: lightgrey;
+  color: lightgrey;
+}
 
 /* LABEL */
 .icon_container {
@@ -91,6 +120,39 @@
   word-wrap: break-word;
   word-break: break-all;
   overflow: hidden;
+}
+.icon_tooltip {
+  display: none;
+}
+.icon_text:hover + .icon_tooltip {
+  position: absolute;
+  bottom: -50px;
+  left: -10px;
+  max-width: 150px;
+  display: block;
+  z-index: 99;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: whitesmoke;
+  color: black;
+  padding: 5px;
+  word-wrap: break-word;
+  font-family: monospace;
+  font-size: 8pt;
+}
+
+/* BreadCrambs */
+.breads_container {
+  position: relative;
+  display: flex;
+}
+.breads_element {
+  font-family: monospace;
+  margin: 0;
+}
+.breads_element:hover {
+  color:lightgrey;
+  cursor: pointer;
 }
 
 /* Mobile */

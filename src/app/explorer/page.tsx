@@ -3,6 +3,7 @@ import styles from '../page.module.css'
 import Logs from "../components/logs";
 import { useState, useEffect } from 'react';
 import Label from '../components/label';
+import BreadCrumbs from '../components/bread_crumbs';
 
 function Explorer(props: any) {
 
@@ -10,9 +11,9 @@ function Explorer(props: any) {
   const [folder, setFolder] = useState<any>()
   const [selected, setSelected] = useState<any>([])
 
-  // useEffect(() => {
-  //   getData('root')
-  // })
+  useEffect(() => {
+    if (!folder) getData('root')
+  }, [folder])
 
   const getData = async (path: string) => {
     try {
@@ -51,28 +52,29 @@ function Explorer(props: any) {
     }
     if(open) {
       const isFolder = !file.name.split('.')[1]
-      console.log('ISFOLDER->', isFolder);
       if (isFolder) {
         const path = file.path + '/' + file.name;
         getData(path);
       } else alert('Sorry can open only folders for now :)')
     }
-    console.log('clickACTION->', file, selected);
   }
   
   return (
     <main className={styles.explorer_container}>
-        {folder && <h4>{folder[0]?.path}</h4>}
+        {folder && <header className={styles.explorer_header}>
+          <BreadCrumbs path={folder[0].path} action={(folder: string) => getData(`/${folder}`)} />
+          <form onSubmit={submitForm}>
+            <input type="file" name='file' id="file" className={styles.explorer_header_fileinput} onChange={e => setFile(e.target.files?.[0])} />
+            <label htmlFor="file">+</label>
+            {/* TODO submit on file input event */}
+            <input type='submit' value='Upload in folder' className={styles.explorer_header_btn} />
+          </form>
+          </header>}
         <div className={styles.explorer_grid}>
           {folder && folder.map((file: any) => {
             return <Label key={file.name} name={file.name} path={file.path} action={(select: boolean, open: boolean) => selectFile(file, select, open)} />
           })}
         </div>
-        <input type="button" value="GET" onClick={e => getData('root')}/>
-        <form onSubmit={submitForm}>
-          <input type="file" name='file' onChange={e => setFile(e.target.files?.[0])} />
-          <input type='submit' value='Upload' />
-        </form>
         <footer>
             <Logs />
         </footer>
