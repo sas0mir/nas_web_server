@@ -10,6 +10,11 @@ function Explorer(props: any) {
   const [file, setFile] = useState<File>()
   const [folder, setFolder] = useState<any>()
   const [selected, setSelected] = useState<any>([])
+  const [newFileName, setNewFileName] = useState<string>('')
+
+  const currentFileNameArray = file ? file.name.split('.') : [];
+  const currentFileType = currentFileNameArray.length ? '.' + currentFileNameArray[currentFileNameArray.length - 1] : '';
+  const currentFileName = currentFileType ? file?.name.replace(currentFileType, '') : '';
 
   useEffect(() => {
     if (!folder) getData('root')
@@ -34,12 +39,15 @@ function Explorer(props: any) {
 
     try {
       const data = new FormData()
-      data.set('file', file)
-      const res = await fetch('/api/upload', {
+      if(newFileName) {
+        data.set('file', file, `${newFileName}${currentFileType}`);
+      } else data.set('file', file)
+      const res = await fetch(`/api/upload${folder.length ? '?folder=' + folder[0].path : ''}`, {
         method: 'POST',
         body: data
       })
       if(!res.ok) throw new Error(await res.text())
+      else setFile(undefined)
     } catch (e: any) {
       console.error(e)
     }
@@ -58,15 +66,17 @@ function Explorer(props: any) {
       } else alert('Sorry can open only folders for now :)')
     }
   }
-  
+  console.log('FILE->', file);
   return (
     <main className={styles.explorer_container}>
         {folder && <header className={styles.explorer_header}>
           <BreadCrumbs path={folder[0].path} action={(folder: string) => getData(`/${folder}`)} />
           <form onSubmit={submitForm}>
-            <input type="file" name='file' id="file" className={styles.explorer_header_fileinput} onChange={e => setFile(e.target.files?.[0])} />
+            <input type="file" name='file' id="file" className={styles.explorer_header_fileinput} onChange={e => setFile(e.target.files?.[0])} multiple/>
             <label htmlFor="file">+</label>
             {/* TODO submit on file input event */}
+            {file && <input type='text' placeholder={currentFileName} className={styles.explorer_header_nameinput} onChange={(e) => setNewFileName(e.target.value)} />}
+            {file && <span className={styles.explorer_header_filetype}>{currentFileType}</span>}
             <input type='submit' value='Upload in folder' className={styles.explorer_header_btn} />
           </form>
           </header>}

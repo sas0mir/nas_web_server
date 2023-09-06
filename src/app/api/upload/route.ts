@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 
 export async function POST(request: NextRequest) {
+    const folder = request.nextUrl.searchParams.get('folder') || '/media/sas/DRIVE_D';
     const data = await request.formData();
     const file: File | null = data.get('file') as unknown as File
 
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    const path = join('/', 'media/sas/D', file.name)
+    const path = join(folder, file.name)
     await writeFile(path, buffer)
     console .log(`file uploaded to ${path}`)
 
