@@ -4,6 +4,8 @@ import Logs from "../components/logs";
 import { useState, useEffect } from 'react';
 import Label from '../components/label';
 import BreadCrumbs from '../components/bread_crumbs';
+import { getFileTypeAndName } from '../utils/helpers';
+import Viewer from '../components/viewer';
 
 function Explorer(props: any) {
 
@@ -11,6 +13,7 @@ function Explorer(props: any) {
   const [folder, setFolder] = useState<any>()
   const [selected, setSelected] = useState<any>([])
   const [newFileName, setNewFileName] = useState<string>('')
+  const [view, setView] = useState<File>()
 
   const currentFileNameArray = file ? file.name.split('.') : [];
   const currentFileType = currentFileNameArray.length ? '.' + currentFileNameArray[currentFileNameArray.length - 1] : '';
@@ -60,13 +63,17 @@ function Explorer(props: any) {
     }
     if(open) {
       const isFolder = !file.name.split('.')[1]
+      const {fileName, fileType} = getFileTypeAndName(file.name);
       if (isFolder) {
         const path = file.path + '/' + file.name;
         getData(path);
-      } else alert('Sorry can open only folders for now :)')
+      } else {
+        setView(file)
+        // alert('Sorry can open only folders for now :)')
+      }
     }
   }
-  console.log('FILE->', file);
+  
   return (
     <main className={styles.explorer_container}>
         {folder && <header className={styles.explorer_header}>
@@ -85,6 +92,7 @@ function Explorer(props: any) {
             return <Label key={file.name} name={file.name} path={file.path} action={(select: boolean, open: boolean) => selectFile(file, select, open)} />
           })}
         </div>
+        {view && <Viewer file={view} />}
         <footer>
             <Logs />
         </footer>
