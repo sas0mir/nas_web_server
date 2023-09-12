@@ -2,24 +2,21 @@ import { stat } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 import mime from "mime";
-import { createReadStream } from "fs";
+import { createReadStream, createWriteStream } from "fs";
 import { Http2ServerRequest, Http2ServerResponse } from "http2";
+import Express from 'express';
 import url from "url";
 
-export async function GET(request: Http2ServerRequest, response: Http2ServerResponse) {
-
+export async function GET(request: Express.Request, response: Express.Response) {
     const reqQuery = url.parse(request.url, true).query;
     const filepath = Array.isArray(reqQuery) ? reqQuery[0].filepath : reqQuery.filepath;
     const mimeType = mime.getType(filepath) || 'image/jpeg';
-    const range = request.headers.range;
+    const range = request.headers.range || '1';
     console.log('RANGE->', range);
-    if (!range) return NextResponse.json({success: false, error: 'No range'})
 
     const path = join(filepath)
     console.log('FILEPATH->', path);
     try {
-        //todo createReadStream(path).pipe(res) in res.writeHead(200), {Content-Length: todo length with fs.stat, Content-Type: mime.getType(filepath)}
-        //const file = await readFile(path);
         const size = (await stat(path)).size;
         console.log('STATS->', size);
 
@@ -33,9 +30,12 @@ export async function GET(request: Http2ServerRequest, response: Http2ServerResp
             "Content-Length": contentLength,
             "Content-Type": mimeType
         }
-
-        response.writeHead(206, headers);
+        console.log('RESPONSE->',typeof response.writeHead, response);
+        if(typeof response.writeHead === 'function') response.writeHead(206, headers);
         const mediaStream = createReadStream(path, {start, end});
+        //response.pipe(mediaStream);
+        //todo createWritestream for response
+        //const writeStream = createWriteStream(response)
         mediaStream.pipe(response);
     } catch(err) {
         console.error('GET-FILE-ERROR->', err)

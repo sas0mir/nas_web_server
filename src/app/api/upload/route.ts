@@ -10,13 +10,17 @@ export async function POST(request: NextRequest) {
     if (!file) {
         return NextResponse.json({success: false})
     }
+    try {
+        const bytes = await file.arrayBuffer()
+        const buffer = Buffer.from(bytes)
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+        const path = join(folder, file.name)
+        await writeFile(path, buffer)
+        console.log(`file uploaded to ${path}`)
 
-    const path = join(folder, file.name)
-    await writeFile(path, buffer)
-    console .log(`file uploaded to ${path}`)
-
-    return NextResponse.json({success: true})
+        return NextResponse.json({success: true, ok: true, text: `file uploaded to ${path}`})
+    } catch(err) {
+        console.error('UPLOAD-ERROR->', err);
+        return NextResponse.json({success: false, error: err})
+    }
 }

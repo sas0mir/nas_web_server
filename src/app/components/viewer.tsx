@@ -1,12 +1,16 @@
 "use client"
-import styles from '../page.module.css'
-import { getFileTypeAndName } from '../utils/helpers';
+import { useEffect, useState } from 'react';
+import styles from '../page.module.css';
 
 export default function Viewer(props: any) {
 
     const {file} = props;
 
-    const {fileName, fileType} = getFileTypeAndName(file.name);
+    const [percentage, setPercentage] = useState(0);
+
+    useEffect(() => {
+        getFile(file.path + '/' + file.name);
+    }, [])
     //TODO
     const getFile = (path: string) => {
         if (!path) console.log('!PATH ERROR');
@@ -15,13 +19,33 @@ export default function Viewer(props: any) {
             fetch(`/api/get?filepath=${path}`, {
                 method: 'GET',
             }).then(res => {
-                return res.body?.getReader().read()
-            }).then((stream) => {
-                //let decoder = new TextDecoder('utf-8)
-                //const {value, done} = stream;
-                //decoder.decode(value)
-                console.log('STREAM->', stream);
+                const reader = res.body?.getReader();
+                const totalSize = Number(res.headers.get('Content-Length'));
+                const mimeType = res.headers.get('Content-Type');
+                console.log('W-1->', reader);
+                return new ReadableStream({
+                    start(controller) {
+                        return pump();
+                        function pump(): any {
+                            return reader?.read().then(({done, value}) => {
+                                if(done) {
+                                    controller.close();
+                                    return
+                                }
+                                setPercentage(Math.floor((value.length/totalSize) * 100))
+                                controller.enqueue(value);
+                                return pump();
+                            });
+                        }
+                    },
+                });
+            }).then((stream) => new Response(stream))
+            .then((response) => response.blob())
+            .then((blob) => URL.createObjectURL(blob))
+            .then((url) => {
+                document.getElementById('preview')?.setAttribute('src', url);
             })
+            .catch((err) => console.error(err))
             //setFolder(folder)
         } catch(err) {
             console.error(err)
@@ -43,11 +67,9 @@ export default function Viewer(props: any) {
 
   return (
     <div className={styles.viewer_container}>
-        <video controls muted autoPlay>
-            <source src={`/api/get?filepath=${file.path}/${file.name}`} type="video/mp4" />
-        </video>
-        {showImage()}
+        <img id="preview" />
         <p>{file.name}</p>
+        <p>{percentage}</p>
     </div>
   )
 }
