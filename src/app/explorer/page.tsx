@@ -6,6 +6,7 @@ import Label from '../components/label';
 import BreadCrumbs from '../components/bread_crumbs';
 import { getFileTypeAndName } from '../utils/helpers';
 import Viewer from '../components/viewer';
+import List from '../components/list';
 
 function Explorer(props: any) {
 
@@ -78,6 +79,10 @@ function Explorer(props: any) {
       const newSelectedArray = [...selected, file];
       setSelected(newSelectedArray);
     }
+    if(!select && !open && selected.length) {
+      const newSelectedArray = selected.filter((f:any) => f.name !== file.name);
+      setSelected(newSelectedArray);
+    }
     if(open) {
       const isFolder = !file.name.split('.')[1]
       const {fileName, fileType} = getFileTypeAndName(file.name);
@@ -90,12 +95,13 @@ function Explorer(props: any) {
       }
     }
   }
-  
+
   return (
     <main className={styles.explorer_container}>
         {folder && <header className={styles.explorer_header}>
           <BreadCrumbs path={folder && folder[0] ? folder[0].path : ''} action={(folder: string) => getData(`/${folder}`)} />
           <div className={styles.explorer_header_right}>
+            {selected.length ? <List files={selected} /> : null}
             {!newFolderName && <input type="button" name='newfolder' id="newfolder" value="+folder" className={styles.explorer_header_folderinput} onClick={(e) => createNewFolder(false)}/>}
             {newFolderName && <input type='text' placeholder={newFolderName} className={styles.explorer_header_nameinput} onChange={(e) => setNewFolderName(e.target.value)} />}
             {newFolderName && <input type='button' value='Create new folder' className={styles.explorer_header_btn} onClick={(e) => createNewFolder(true)}/>}

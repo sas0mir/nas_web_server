@@ -54,7 +54,7 @@ export default function Label(props: any) {
 
     const handleIconClick = (e: any) => {
         setSelected(!selected)
-        action(selected, false)
+        action(!selected, false)
     }
 
     const handleIconDoubleClick = (e: any) => {

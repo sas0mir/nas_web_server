@@ -36,7 +36,10 @@ export async function GET(request: Express.Request, response: Express.Response) 
         //response.pipe(mediaStream);
         //todo createWritestream for response
         //const writeStream = createWriteStream(response)
-        mediaStream.pipe(response);
+        //mediaStream.pipe(response);
+        const writeStream = createWriteStream(path);
+        response.pipe(writeStream);
+
     } catch(err) {
         console.error('GET-FILE-ERROR->', err)
         return NextResponse.json({success: false, error: err})
