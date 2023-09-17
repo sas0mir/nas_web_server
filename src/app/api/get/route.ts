@@ -1,26 +1,25 @@
 import { stat } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 import { join } from "path";
 import mime from "mime";
 import { createReadStream, createWriteStream } from "fs";
 import { Http2ServerRequest, Http2ServerResponse } from "http2";
 import Express from 'express';
 import url from "url";
+import ffmpeg from 'fluent-ffmpeg';
 
-export async function GET(request: Express.Request, response: Express.Response) {
-    const reqQuery = url.parse(request.url, true).query;
+export async function GET(request: NextApiRequest, response: NextApiResponse) {
+    const reqQuery = request.query;//url.parse(request.url, true).query;
     const filepath = Array.isArray(reqQuery) ? reqQuery[0].filepath : reqQuery.filepath;
     const mimeType = mime.getType(filepath) || 'image/jpeg';
-    const range = request.headers.range || '1';
-    console.log('RANGE->', range);
+    const range = request.headers.range || '10';
 
     const path = join(filepath)
-    console.log('FILEPATH->', path);
     try {
         const size = (await stat(path)).size;
-        console.log('STATS->', size);
 
-        const chunkSize = 10 ** 6; //1mb
+        const chunkSize = 1024 *1024;
         const start = Number(range.replace(/\D/g, ''));
         const end = Math.min(start + chunkSize, size - 1);
         const contentLength = end - start + 1;
@@ -30,15 +29,30 @@ export async function GET(request: Express.Request, response: Express.Response) 
             "Content-Length": contentLength,
             "Content-Type": mimeType
         }
-        console.log('RESPONSE->',typeof response.writeHead, response);
-        if(typeof response.writeHead === 'function') response.writeHead(206, headers);
+        //response.headers
         const mediaStream = createReadStream(path, {start, end});
-        //response.pipe(mediaStream);
-        //todo createWritestream for response
-        //const writeStream = createWriteStream(response)
-        //mediaStream.pipe(response);
-        const writeStream = createWriteStream(path);
-        response.pipe(writeStream);
+
+        if(mimeType.split('/')[0] === 'video') {
+            // const ffmpegStream = ffmpeg(mediaStream)
+            // .noAudio()
+            // .videoCodec('libx264')
+            // .format('mp4')
+            // .outputOptions('-movflags frag_keyframe+empty_moov')
+            // .on('end', () => {
+            //     console.log('ON-SERVER-STREAM-FINISHED');
+            // })
+            // .on('error', (err) => {
+            //     console.error('SERVER-STREAM-ERROR->', err)
+            // })
+            // return new NextResponse(ffmpegStream)
+            //ffmpegStream.pipe(response)
+            mediaStream.pipe(response);
+        } else {
+            //response.pipe(mediaStream);
+            //todo createWritestream for response
+            //const writeStream = createWriteStream(response)
+            mediaStream.pipe(response);
+        }
 
     } catch(err) {
         console.error('GET-FILE-ERROR->', err)

@@ -1,15 +1,18 @@
 "use client"
 import { useEffect, useState } from 'react';
 import styles from '../page.module.css';
+import mime from 'mime';
 
 export default function Viewer(props: any) {
 
     const {file} = props;
+    const mimeType = mime.getType(file.name);
+    const mediaType = mimeType?.split('/')[0];
 
     const [percentage, setPercentage] = useState(0);
 
     useEffect(() => {
-        getFile(file.path + '/' + file.name);
+        //getFile(file.path + '/' + file.name);
     }, [])
     //TODO
     const getFile = (path: string) => {
@@ -18,6 +21,7 @@ export default function Viewer(props: any) {
         try {
             fetch(`/api/get?filepath=${path}`, {
                 method: 'GET',
+                headers: {'range': '10'}
             }).then(res => {
                 const reader = res.body?.getReader();
                 const totalSize = Number(res.headers.get('Content-Length'));
@@ -64,10 +68,19 @@ export default function Viewer(props: any) {
         // console.log('WIEW->', file);
         return <div>image</div>
     }
-
+    console.log('VIEWER->', file, mediaType);
   return (
     <div className={styles.viewer_container}>
-        <img id="preview" />
+        {mediaType === 'video' ?
+        <video
+            src={`/api/get?filepath=${file.path}/${file.name}`}
+            controls
+            autoPlay
+            id="videoPlayer"
+            width="800px"
+            height="auto"
+        /> :
+        <img src={`/api/get?filepath=${file.path}/${file.name}`} className='viewer_image' />}
         <p>{file.name}</p>
         <p>{percentage}</p>
     </div>
