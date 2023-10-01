@@ -89,7 +89,7 @@ function Explorer(props: any) {
       }
 
       try {
-        await axios.post(`/api/uploadstream?folder=${location}`, data, uploadConfig);
+        await axios.post(`/api/uploadstream?folder=${location}/${currentFileName}${currentFileType}`, data, uploadConfig);
       } catch(e) {
         console.error('UPLOAD-ERROR->', e);
       } finally {

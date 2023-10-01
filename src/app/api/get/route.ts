@@ -3,23 +3,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { join } from "path";
 import mime from "mime";
-import { createReadStream, createWriteStream } from "fs";
+import { createReadStream, createWriteStream, statSync } from "fs";
 import { Http2ServerRequest, Http2ServerResponse } from "http2";
 import Express from 'express';
 import url from "url";
 import ffmpeg from 'fluent-ffmpeg';
 
 export async function GET(request: NextApiRequest, response: NextApiResponse) {
-    const reqQuery = request.query;//url.parse(request.url, true).query;
+    const reqQuery = url.parse(request.url as string, true).query;
+    console.log('QUERY->', request.headers);
     const filepath = Array.isArray(reqQuery) ? reqQuery[0].filepath : reqQuery.filepath;
     const mimeType = mime.getType(filepath) || 'image/jpeg';
-    const range = request.headers.range || '10';
+    const range = request.headers.range || '0-21';
+
+    if(!range) {
+        console.log('NO RANGE');
+        return response.status(400).send('Range not provdied');
+    }
 
     const path = join(filepath)
     try {
-        const size = (await stat(path)).size;
+        const size = statSync(path).size;//(await stat(path)).size;
 
-        const chunkSize = 1024 *1024;
+        const chunkSize = 1024 * 1024;
         const start = Number(range.replace(/\D/g, ''));
         const end = Math.min(start + chunkSize, size - 1);
         const contentLength = end - start + 1;
@@ -29,6 +35,8 @@ export async function GET(request: NextApiRequest, response: NextApiResponse) {
             "Content-Length": contentLength,
             "Content-Type": mimeType
         }
+
+        if (typeof response.writeHead === 'function') response.writeHead(206, headers);
         //response.headers
         const mediaStream = createReadStream(path, {start, end});
 
