@@ -13,6 +13,7 @@ export const config = {
 export function POST(req: NextApiRequest, res: NextApiResponse) {
     const reqQuery = url.parse(req.url as string, true).query;
     const headersList = headers();
+    console.log('HEADERS->', req.headers);
     const normalHeaders = {
         ...req.headers,
         'accept': headersList.get('accept') as string,
@@ -32,12 +33,15 @@ export function POST(req: NextApiRequest, res: NextApiResponse) {
         'x-invoke-query': headersList.get('x-invoke-query') as string,
         'x-middleware-invoke': headersList.get('x-middleware-invoke') as string,
     };
-    console.log('NORMAL->', normalHeaders, reqQuery.folder);
+    console.log('NORMAL->', normalHeaders["content-range"], reqQuery.folder);
     const folder = reqQuery.folder;
     const bb = busboy({headers: normalHeaders});
     bb.on('error', (err) => {
         console.log('BB-ERROR->', err);
-    })
+        res.writeHead(500, {connection: 'close'});
+        res.send(err);
+        return
+    });
     bb.on('file', (_, file, info) => {
         console.log('BB-ON-FILE->', _, info, folder);
         const fileName = info.filename;
@@ -52,8 +56,8 @@ export function POST(req: NextApiRequest, res: NextApiResponse) {
         console.log('CLOSE-BUS-BOY->');
         res.writeHead(200, {Connection: "close"});
         res.end("Upload complete");
+        return
     });
 
-    req.pipe(bb);
-    return
+    if (req.body && typeof req.body.pipe === 'function') req.body.pipe(bb);
 }

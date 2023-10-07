@@ -9,8 +9,13 @@ import Viewer from '../components/viewer';
 import List from '../components/list';
 import axios, { AxiosRequestConfig } from "axios";
 import mime from 'mime';
+import Upload from '../components/upload';
+import { useSession } from 'next-auth/react';
 
 function Explorer(props: any) {
+
+  const {data: session} = useSession();
+  console.log('SESSION->', session);
   //file to upload & upload progress 
   const [file, setFile] = useState<File | undefined>();
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -145,6 +150,7 @@ function Explorer(props: any) {
               {file && <span className={styles.explorer_header_filetype}>{currentFileType}</span>}
               {file && <input type='submit' value={uploadProgress ? `${uploadProgress}%` : 'Upload in folder'} className={styles.explorer_header_btn} />}
             </form>
+            <Upload folder={location}/>
           </div>
           </header>}
         <div className={styles.explorer_grid}>
