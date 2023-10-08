@@ -1,7 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next';
-import SessionProvider from './components/session_provider';
-import { getServerSession } from 'next-auth';
+import AuthProvider from './components/session_provider';
 
 export const metadata: Metadata = {
   title: 'garbage',
@@ -13,11 +12,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession();
   return (
     <html lang="en">
       <body className="body_container">
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   )
