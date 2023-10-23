@@ -26,27 +26,8 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     secret: env.NEXTAUTH_SECRET,
-    callbacks: {
-        jwt: ({token, user}) => {
-            if (user) {
-                token.id = user.name;//user.id
-            }
-            return token
-        },
-        session: ({session, token}) => {
-            if (token) {
-                console.log('AUTH-SESSION-CALLBACK-TOKEN->', token);
-                //session.id = token.id;
-            }
-            return session
-        }
-    },
-    jwt: {
-        secret: env.NEXTAUTH_SECRET,
-        //encryption: true
-    },
     pages: {
-        signIn: "api/auth/signin"
+        signIn: "/auth/credential-signin"
     }
 };
 const handler = NextAuth(authOptions);

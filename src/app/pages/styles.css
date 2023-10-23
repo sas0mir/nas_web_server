@@ -1,0 +1,280 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6rem;
+    min-height: 100vh;
+  }
+  
+  .auth_login_input {
+    position: absolute;
+    top: 150px;
+    left: 200px;
+    border: none;
+    border-bottom: 1px solid green;
+    padding: 5px;
+    font-family: monospace;
+    font-size: 14pt;
+    color: green;
+  }
+  .auth_pass_input {
+    position: absolute;
+    top: 200px;
+    left: 200px;
+    border: none;
+    border-bottom: 1px solid green;
+    padding: 5px;
+    font-family: monospace;
+    font-size: 14pt;
+    color: green;
+  }
+  
+  .auth_input:focus, .auth_input:focus-visible {
+    outline: none;
+  }
+  
+  /* EXPLORER */
+  .explorer_container {
+    position: relative;
+    display: block;
+    height: 100%;
+    padding: 0px 20px 5px 20px;
+    background-color: lightslategrey;
+  }
+  .explorer_grid {
+    position: relative;
+    display: flex;
+    padding: 10px;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: lightgray;
+  }
+  .explorer_header {
+    position: sticky;
+    top: -1px;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border: 1px solid black;
+    border-radius: 0px 0px 10px 10px;
+    background-color: lightgrey;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+  }
+  .explorer_header_right {
+    position: relative;
+    display: flex;
+  }
+  .explorer_header_fileinput {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+  .explorer_header_fileinput + label {
+    font-family: monospace;
+    font-weight: bolder;
+    font-size: 9pt;
+    color: black;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    padding: 1px 4px;
+    margin-right: 10px;
+    margin-bottom: 2px;
+  }
+  .explorer_header_fileinput:focus + label, .explorer_header_fileinput + label:hover {
+    border-color: lightslategrey;
+    color: lightslategrey;
+  }
+  .explorer_header_fileinput:focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+  .explorer_header_folderinput {
+    font-family: monospace;
+    font-weight: bolder;
+    font-size: 9pt;
+    color: black;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    padding: 1px 4px;
+    margin-right: 10px;
+    margin-bottom: 2px;
+    background-color: lightgray;
+  }
+  .explorer_header_folderinput:hover {
+    border-color: lightslategrey;
+    color: lightslategrey;
+  }
+  .explorer_header_nameinput {
+    padding: 3px 7px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    font-family: monospace;
+    font-size: 10pt;
+  }
+  .explorer_header_nameinput:focus-visible {
+    outline: none;
+  }
+  .explorer_header_btn {
+    margin: 0 5px;
+    padding: 3px 7px;
+    border: 1px solid black;
+    background-color: lightgrey;
+    border-radius: 10px;
+    font-family: monospace;
+    font-size: 10pt;
+  }
+  .explorer_header_btn:hover {
+    cursor: pointer;
+    background-color: aliceblue;
+  }
+  
+  /* LABEL */
+  .icon_container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 60px;
+    height: 80px;
+    margin: 10px;
+    align-items: center;
+  }
+  .icon_container:hover {
+    color:lightslategray;
+  }
+  .icon_box {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 7px;
+    background-color: bisque;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+  }
+  .icon_box_selected {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 7px;
+    background-color: lightblue;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid blue;
+    border-radius: 5px;
+    color: blue;
+  }
+  .icon_box:hover, .icon_box_selected:hover {
+    border-color: lightslategray;
+    color: lightslategray;
+    cursor: pointer;
+  }
+  .icon_text {
+    margin-top: 5px;
+    font-family: monospace;
+    font-size: 8pt;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+  }
+  .icon_tooltip {
+    display: none;
+  }
+  .icon_text:hover + .icon_tooltip {
+    position: absolute;
+    bottom: -50px;
+    left: -10px;
+    max-width: 150px;
+    display: block;
+    z-index: 99;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    color: black;
+    padding: 5px;
+    word-wrap: break-word;
+    font-family: monospace;
+    font-size: 8pt;
+  }
+  
+  /* BreadCrambs */
+  .breads_container {
+    position: relative;
+    display: flex;
+  }
+  .breads_element {
+    font-family: monospace;
+    margin: 0;
+  }
+  .breads_element:hover {
+    color:lightslategrey;
+    cursor: pointer;
+  }
+  
+  /* LIST */
+  .list_container {
+    position: relative;
+    display: flex;
+  }
+  .list_icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2px;
+    margin-right: 5px;
+    /* border: 2px solid black; */
+    /* border-radius: 50%; */
+    font-size: 10pt;
+    cursor: pointer;
+  }
+  .list_icon:hover {
+    border-color: lightslategrey;
+    color: lightslategrey
+  }
+  .list_list {
+    position: absolute;
+    top: 10px;
+    left: -10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: lightgrey;
+    padding: 5px;
+  }
+  .list_list li {
+    list-style-type: none;
+  }
+  
+  /* Mobile */
+  @media (max-width: 700px) {
+  }
+  
+  /* Tablet and Smaller Desktop */
+  @media (min-width: 701px) and (max-width: 1120px) {
+    .grid {
+      grid-template-columns: repeat(2, 50%);
+    }
+  }
+  
+  @keyframes rotate {
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+  

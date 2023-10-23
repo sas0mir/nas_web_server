@@ -17,8 +17,8 @@ export default function Home() {
 
   useEffect(() => {
     console.log('MOUNT->', data, status);
-    if (!data) router.push('/api/auth/singing')
-    else router.push('/explorer')
+    // if (!data) router.push('/api/auth/singing')
+    // else router.push('/explorer')
   }, [])
 
   const checkPass = async (value: string) => {
@@ -26,7 +26,7 @@ export default function Home() {
     if (login && value === "batman") {
       console.log('AUTH->', login, value);
       await connectToDB();
-      const newLog = await prisma.logs.create({data: {id: '', operation: `${login} logged in`, path: 'root', date: new Date()}});
+      const newLog = await prisma.logs.create({data: {id: 99, operation: `${login} logged in`, path: 'root', date: new Date()}});
       await prisma.$disconnect();
       //signIn('credentials', undefined, {login: login, pass: value})
       router.push('/explorer');
