@@ -1,15 +1,15 @@
 "use client"
-import styles from '../page.module.css'
-import Logs from "../components/logs";
+import styles from '../ui/global.module.css'
+import Logs from "../lib/logs";
 import { useState, useEffect } from 'react';
-import Label from '../components/label';
-import BreadCrumbs from '../components/bread_crumbs';
-import { getFileTypeAndName } from '../utils/helpers';
-import Viewer from '../components/viewer';
-import List from '../components/list';
+import Label from '../lib/label';
+import BreadCrumbs from '../lib/bread_crumbs';
+import { getFileTypeAndName } from '../lib/helpers';
+import Viewer from '../lib/viewer';
+import List from '../lib/list';
 import axios, { AxiosRequestConfig } from "axios";
 import mime from 'mime';
-import Upload from '../components/upload';
+import Upload from '../lib/upload';
 import { useSession } from 'next-auth/react';
 
 function Explorer(props: any) {

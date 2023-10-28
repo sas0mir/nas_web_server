@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import styles from '../page.module.css'
+import styles from '../ui/global.module.css'
 //icons for folder, image, music, video and text file types
 import {TfiFolder, TfiImage, TfiMusicAlt, TfiControlPlay, TfiFile} from 'react-icons/tfi'
 

@@ -1,5 +1,5 @@
-import styles from '../page.module.css';
-import { submitUpload } from '../actions';
+import styles from '../ui/global.module.css';
+import { submitUpload } from '../lib/actions';
 export default function Upload(props: any) {
     const {folder} = props;
     //passing arguments to server action

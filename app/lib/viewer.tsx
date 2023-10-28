@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
-import styles from '../page.module.css';
+import styles from '../ui/global.module.css';
 import mime from 'mime';
 
 export default function Viewer(props: any) {

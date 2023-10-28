@@ -1,5 +1,5 @@
 "use client"
-import styles from '../page.module.css'
+import styles from '../ui/global.module.css'
 import { useState, useEffect } from 'react';
 
 export default function Logs(props: any) {

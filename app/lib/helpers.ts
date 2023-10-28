@@ -1,4 +1,4 @@
-import { prisma } from "@/db";
+import { prisma } from "../../db";
 
 export const getFileTypeAndName = (name: string) => {
     const nameArray = name ? name.split('.') : [];

@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from 'next-auth/providers/google';
 import { env } from "process";
 import { useRouter } from "next/navigation";
 //import NextAuth from "next-auth/next";
@@ -23,6 +24,17 @@ export const authOptions: NextAuthOptions = {
                 }
                 return null
             }
+        }),
+        GoogleProvider({
+            clientId: env.GOOGLE_CLIENT_ID || '',
+            clientSecret: env.GOOGLE_CLIENT_SECRET || '',
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
         })
     ],
     secret: env.NEXTAUTH_SECRET,
@@ -39,7 +51,18 @@ export const authOptions: NextAuthOptions = {
                 //session.id = token.id;
             }
             return session
-        }
+        },
+        async redirect({url, baseUrl}) {
+            console.log('REDIRECT CRED AUTH->', url, baseUrl);
+            return url
+        },
+        // async signIn({account, profile}) {
+        //     if(account?.provider === 'google') {
+        //         console.log('GOOGLE-AUTH-CALLBACK->', profile);
+        //         return profile?.email //profile.email_verified && profile?.email?.endsWith('@gmail.com')
+        //     }
+        //     return true
+        // }
     },
     jwt: {
         secret: env.NEXTAUTH_SECRET,

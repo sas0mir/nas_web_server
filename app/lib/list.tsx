@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import styles from '../page.module.css';
+import styles from '../ui/global.module.css';
 import {TfiAngleDown, TfiAngleUp} from 'react-icons/tfi';
 
 export default function List(props: any) {

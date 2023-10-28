@@ -1,6 +1,6 @@
-import './globals.css'
+import styles from './ui/global.module.css';
 import type { Metadata } from 'next';
-import AuthProvider from './components/session_provider';
+//import AuthProvider from './components/session_provider';
 
 export const metadata: Metadata = {
   title: 'garbage',
@@ -14,8 +14,9 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="body_container">
-        <AuthProvider>{children}</AuthProvider>
+      <body className={styles.body_container}>
+        {/* <AuthProvider>{children}</AuthProvider> */}
+        {children}
       </body>
     </html>
   )

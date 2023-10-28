@@ -1,5 +1,5 @@
 "use client"
-import styles from '../page.module.css'
+import styles from '../ui/global.module.css'
 
 export default function BreadCrumbs(props: any) {
 
