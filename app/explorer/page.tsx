@@ -14,8 +14,8 @@ import { useSession } from 'next-auth/react';
 
 function Explorer(props: any) {
 
-  const {data: session} = useSession();
-  console.log('SESSION->', session);
+  const {data: session, status} = useSession();
+  console.log('EXPLORER-SESSION->', session, status);
   //file to upload & upload progress 
   const [file, setFile] = useState<File | undefined>();
   const [uploadProgress, setUploadProgress] = useState(0);

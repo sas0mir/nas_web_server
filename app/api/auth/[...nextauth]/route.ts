@@ -1,76 +1,61 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, RequestInternal } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from 'next-auth/providers/google';
+import type { Record } from "@prisma/client/runtime/library";
 import { env } from "process";
-import { useRouter } from "next/navigation";
-//import NextAuth from "next-auth/next";
+import bcrypt from "bcrypt";
+import {PrismaAdapter} from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 
-//const router = useRouter();
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
+    adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
             name: "credentials",
             credentials: {
-                login: {label: "login", placeholder: "username", type: "text"},
-                password: {label: "password", placeholder: "password", type: "password"}
+                username: {label: "Username", placeholder: "username", type: "text"},
+                password: {label: "Password", type: "password"},
+                email: {label: "Email", type: "email"}
             },
-            authorize(credentials: any) {
-                if(!credentials || !credentials.password) {
+            async authorize(credentials: Record<"email" | "password", string> | undefined, req: Pick<RequestInternal, "query" | "body" | "headers" | "method">) {
+                if(!credentials?.email || !credentials?.password) {
                     return null;
                 }
-                if(credentials.password === env.AUTH_PASSWORD) {
-                    return credentials
+
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: credentials?.email
+                    }
+                });
+
+                if(!user) {
+                    return null
                 }
-                return null
+
+                const passwordMatch = await bcrypt.compare(credentials.password, user.hashedPassword || '');
+
+                if(!passwordMatch) {
+                    return null
+                }
+                
+                await prisma.logs.create({
+                    data: {
+                        operation: 'login',
+                        path: 'back_auth',
+                        date: new Date(),
+                        userId: user.id
+                    }
+                });
+                return {...user, id: user.id.toString()}
             }
         }),
-        GoogleProvider({
-            clientId: env.GOOGLE_CLIENT_ID || '',
-            clientSecret: env.GOOGLE_CLIENT_SECRET || '',
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
-        })
     ],
+    session: {
+        strategy: "jwt",
+    },
     secret: env.NEXTAUTH_SECRET,
-    callbacks: {
-        jwt: ({token, user}) => {
-            if (user) {
-                token.id = user.name;//user.id
-            }
-            return token
-        },
-        session: ({session, token}) => {
-            if (token) {
-                console.log('AUTH-SESSION-CALLBACK-TOKEN->', token);
-                //session.id = token.id;
-            }
-            return session
-        },
-        async redirect({url, baseUrl}) {
-            console.log('REDIRECT CRED AUTH->', url, baseUrl);
-            return url
-        },
-        // async signIn({account, profile}) {
-        //     if(account?.provider === 'google') {
-        //         console.log('GOOGLE-AUTH-CALLBACK->', profile);
-        //         return profile?.email //profile.email_verified && profile?.email?.endsWith('@gmail.com')
-        //     }
-        //     return true
-        // }
-    },
-    jwt: {
-        secret: env.NEXTAUTH_SECRET,
-        //encryption: true
-    },
-    pages: {
-        signIn: "api/auth/signin"
-    }
+    debug: env.NODE_ENV === "development",
 };
 const handler = NextAuth(authOptions);
 

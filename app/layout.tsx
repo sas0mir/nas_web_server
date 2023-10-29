@@ -1,6 +1,6 @@
 import styles from './ui/global.module.css';
 import type { Metadata } from 'next';
-//import AuthProvider from './components/session_provider';
+import Provider from './lib/provider';
 
 export const metadata: Metadata = {
   title: 'garbage',
@@ -12,12 +12,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <html lang="en">
-      <body className={styles.body_container}>
-        {/* <AuthProvider>{children}</AuthProvider> */}
-        {children}
-      </body>
+      <Provider>
+        <body className={styles.body_container}>
+          {children}
+        </body>
+      </Provider>
     </html>
   )
 }
