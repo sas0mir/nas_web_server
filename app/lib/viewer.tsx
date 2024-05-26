@@ -3,7 +3,12 @@ import { useEffect, useState } from 'react';
 import styles from '../ui/global.module.css';
 import mime from 'mime';
 
-export default function Viewer(props: any) {
+export default function Viewer({
+    children, props
+  }: {
+    children: React.ReactNode,
+    props: any
+  }) {
 
     const {file} = props;
     const mimeType = mime.getType(file.name);

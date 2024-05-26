@@ -1,0 +1,71 @@
+.explorer_header_fileinput {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.explorer_header_fileinput + label {
+    font-family: monospace;
+    font-weight: bolder;
+    font-size: 9pt;
+    color: black;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    padding: 1px 4px;
+    margin-right: 10px;
+    margin-bottom: 2px;
+}
+.explorer_header_fileinput:focus + label, .explorer_header_fileinput + label:hover {
+    border-color: lightslategrey;
+    color: lightslategrey;
+}
+.explorer_header_fileinput:focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+.explorer_header_folderinput {
+    font-family: monospace;
+    font-weight: bolder;
+    font-size: 9pt;
+    color: black;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    padding: 1px 4px;
+    margin-right: 10px;
+    margin-bottom: 2px;
+    background-color: lightgray;
+}
+.explorer_header_folderinput:hover {
+    border-color: lightslategrey;
+    color: lightslategrey;
+}
+.explorer_header_nameinput {
+    padding: 3px 7px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    font-family: monospace;
+    font-size: 10pt;
+}
+.explorer_header_nameinput:focus-visible {
+    outline: none;
+}
+.explorer_header_btn {
+    margin: 0 5px;
+    padding: 3px 7px;
+    border: 1px solid black;
+    background-color: lightgrey;
+    border-radius: 10px;
+    font-family: monospace;
+    font-size: 10pt;
+}
+.explorer_header_btn:hover {
+    cursor: pointer;
+    background-color: aliceblue;
+}

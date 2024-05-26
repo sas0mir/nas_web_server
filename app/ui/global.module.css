@@ -17,6 +17,19 @@
 }
 
 /* AUTH */
+.auth_start_btn {
+    margin: 10px auto;
+    padding: 5px 10px;
+    border: none;
+    width: fit-content;
+    background-color: inherit;
+    font-family: monospace;
+    font-size: 10pt;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
 .auth_form {
     position: relative;
     display: flex;

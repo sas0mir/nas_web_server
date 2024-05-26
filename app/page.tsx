@@ -13,10 +13,10 @@ export default function Page({Component, pageProps}:AppProps) {
     return (
         <main className={styles.main}>
             {session?.user ? 
-            <Link href="/explorer">Back to explorer {session?.user.name}</Link> : 
+            <Link href="/explorer" replace className={styles.auth_start_btn}>Back to explorer {session?.user.name}</Link> : 
             <div>
-                <Link href="/register">Register</Link>
-                <Link href="/login">Login</Link>
+                <Link href="/register" replace className={styles.auth_start_btn}>Register</Link>
+                <Link href="/login" replace className={styles.auth_start_btn}>Login</Link>
             </div>
             }
         </main>

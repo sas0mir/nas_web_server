@@ -9,7 +9,8 @@ import Viewer from '../lib/viewer';
 import List from '../lib/list';
 import axios, { AxiosRequestConfig } from "axios";
 import mime from 'mime';
-import Upload from '../lib/upload';
+import UploadProvider from '../lib/upload_provider';
+import Upload from '@/lib/upload';
 import { useSession } from 'next-auth/react';
 
 function Explorer(props: any) {
@@ -61,49 +62,6 @@ function Explorer(props: any) {
     }
   }
 
-  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if(!file) return
-    const data = new FormData();
-    //custom file name (data.append or maybe data.set)
-    if(newFileName) {
-      data.append('file', file, `${newFileName}${currentFileType}`);
-    } else data.append('file', file)
-
-    //using simple writeFile upload if size < 10 or filestream for bigger files
-    if(file.size < 10000000) {
-      try {
-        const res = await fetch(`/api/upload${folder.length ? '?folder=' + folder[0].path : ''}`, {
-          method: 'POST',
-          body: data
-        }).then((resp => {
-          if(!resp.ok) throw new Error(resp.statusText)
-        else setFile(undefined)
-        return resp.json()
-        })).then(dataa => console.log('DATA->', dataa))//todo
-      } catch (e: any) {
-        console.error(e)
-      }
-    } else {
-      const uploadConfig: AxiosRequestConfig = {
-        onUploadProgress: function(progressEvent) {
-          let total = progressEvent.total || file.size;
-          const percentComplete = Math.round((progressEvent.loaded * 100) / total);
-          setUploadProgress(percentComplete);
-        }
-      }
-
-      try {
-        await axios.post(`/api/uploadstream?folder=${location}/${currentFileName}${currentFileType}`, data, uploadConfig);
-      } catch(e) {
-        console.error('UPLOAD-ERROR->', e);
-      } finally {
-        setUploadProgress(0);
-        setFile(undefined);
-      }
-    }
-  }
-
   const clearSelected = () => {
     setSelected([])
   }
@@ -132,6 +90,7 @@ function Explorer(props: any) {
 
   return (
     <main className={styles.explorer_container}>
+      {/* check session && status to show explorer */}
         {folder && <header className={styles.explorer_header}>
           <BreadCrumbs path={location ? location : folder.length ? folder[0].path : ''} action={(folder: string) => {
             getData(`/${folder}`);
@@ -142,15 +101,9 @@ function Explorer(props: any) {
             {!newFolderName && <input type="button" name='newfolder' id="newfolder" value="+folder" className={styles.explorer_header_folderinput} onClick={(e) => createNewFolder(false)}/>}
             {newFolderName && <input type='text' placeholder={newFolderName} className={styles.explorer_header_nameinput} onChange={(e) => setNewFolderName(e.target.value)} />}
             {newFolderName && <input type='button' value='Create new folder' className={styles.explorer_header_btn} onClick={(e) => createNewFolder(true)}/>}
-            <form onSubmit={submitForm}>
-              <input type="file" name='file' id="file" className={styles.explorer_header_fileinput} onChange={e => setFile(e.target.files?.[0])}/>
-              {!file && <label htmlFor="file">+file</label>}
-              {/* TODO submit on file input event */}
-              {file && <input type='text' placeholder={currentFileName} className={styles.explorer_header_nameinput} onChange={(e) => setNewFileName(e.target.value)} />}
-              {file && <span className={styles.explorer_header_filetype}>{currentFileType}</span>}
-              {file && <input type='submit' value={uploadProgress ? `${uploadProgress}%` : 'Upload in folder'} className={styles.explorer_header_btn} />}
-            </form>
-            <Upload folder={location}/>
+            <UploadProvider>
+              <Upload />
+            </UploadProvider>
           </div>
           </header>}
         <div className={styles.explorer_grid}>
@@ -158,7 +111,11 @@ function Explorer(props: any) {
             return <Label key={file.name} name={file.name} path={file.path} action={(select: boolean, open: boolean) => selectFile(file, select, open)} />
           })}
         </div>
-        {view && <Viewer file={view} />}
+        {view && null
+          /* <Viewer file={view}> */
+            /* <div>viewer server component</div> */
+          /* </Viewer> */
+        }
         <footer>
             <Logs />
         </footer>
